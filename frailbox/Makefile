@@ -15,6 +15,7 @@ DEPS = $(OBJS:.o=.d)
 
 TARGET = frailbox
 TEST_LOGGER_SHUTDOWN = $(BUILDDIR)/tests/test_logger_shutdown
+TEST_CONNECTOR_WAIT_ALL = $(BUILDDIR)/tests/test_connector_wait_all
 
 .PHONY: all clean
 
@@ -39,8 +40,17 @@ $(TEST_LOGGER_SHUTDOWN): tests/test_logger_shutdown.c $(SRCDIR)/logger.c $(INCDI
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCDIR) tests/test_logger_shutdown.c $(SRCDIR)/logger.c -o $@ -pthread
 
-test: $(TEST_LOGGER_SHUTDOWN)
+$(TEST_CONNECTOR_WAIT_ALL): tests/test_connector_wait_all.c connector/api.c connector/api.h connector/protocol.c connector/protocol.h
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I$(INCDIR) -Iconnector tests/test_connector_wait_all.c connector/api.c connector/protocol.c -o $@ -pthread
+
+test-logger-shutdown: $(TEST_LOGGER_SHUTDOWN)
 	./$(TEST_LOGGER_SHUTDOWN)
+
+test-connector-wait-all: $(TEST_CONNECTOR_WAIT_ALL)
+	./$(TEST_CONNECTOR_WAIT_ALL)
+
+test: test-logger-shutdown test-connector-wait-all
 
 valgrind: $(TARGET)
 	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)

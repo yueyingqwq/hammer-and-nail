@@ -118,9 +118,17 @@ MODULES = [
         name="frailbox-logger",
         language="C",
         dir=ROOT / "frailbox",
-        build_cmd=["make", "test"],
+        build_cmd=["make", "test-logger-shutdown"],
         clean_cmd=["make", "clean"],
         build_dir=ROOT / "frailbox" / "build" / "tests" / "test_logger_shutdown",
+    ),
+    Module(
+        name="frailbox-connector",
+        language="C",
+        dir=ROOT / "frailbox",
+        build_cmd=["make", "test-connector-wait-all"],
+        clean_cmd=["make", "clean"],
+        build_dir=ROOT / "frailbox" / "build" / "tests" / "test_connector_wait_all",
     ),
     Module(
         name="engine",
